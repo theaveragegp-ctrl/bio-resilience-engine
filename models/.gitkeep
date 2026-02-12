@@ -1,0 +1,5 @@
+# Model files directory
+# Place pretrained model weights here:
+# - yolov8n-pose.pt
+# - activity_lstm.pt
+# - fatigue_predictor.pt

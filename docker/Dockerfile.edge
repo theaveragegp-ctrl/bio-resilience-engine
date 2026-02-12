@@ -1,0 +1,31 @@
+# Dockerfile for Edge Node Simulator
+# For actual Jetson deployment, use JetPack base image
+
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libopencv-dev \
+    python3-opencv \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY src/ ./src/
+COPY models/ ./models/
+
+# Expose any ports if needed
+EXPOSE 8001
+
+# Run edge node
+CMD ["python", "-m", "src.edge_node.main", \
+     "--model", "models/yolov8n-pose.pt", \
+     "--source", "${VIDEO_SOURCE:-0}", \
+     "--mqtt-broker", "${MQTT_BROKER:-mqtt}", \
+     "--device", "cpu"]
